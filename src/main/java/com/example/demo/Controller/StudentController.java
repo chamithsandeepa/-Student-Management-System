@@ -3,43 +3,35 @@ package com.example.demo.Controller;
 import com.example.demo.Model.Student;
 import com.example.demo.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/students")
-@CrossOrigin(origins = "*")
+@RequestMapping("/students")
 public class StudentController {
 
     @Autowired
     private StudentService studentService;
 
-    @PostMapping
-    public ResponseEntity<Student> saveStudent(@RequestBody Student student) {
-        return new ResponseEntity<>(studentService.saveStudent(student), HttpStatus.CREATED);
+    // Other endpoints...
+
+    // Endpoint to get students by enrollment year
+    @GetMapping("/enrollment-year/{year}")
+    public List<Student> getStudentsByYearOfEnrollment(@PathVariable int year) {
+        return studentService.getStudentsByYearOfEnrollment(year);
     }
 
-    @GetMapping
-    public List<Student> getAllStudents() {
-        return studentService.getAllStudents();
+    // Endpoint to get department by student ID
+    @GetMapping("/{id}/department")
+    public String getDepartmentByStudentId(@PathVariable long id) {
+        return studentService.getDepartmentByStudentId(id);
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable("id") long studentId) {
-        return new ResponseEntity<>(studentService.getStudentById(studentId), HttpStatus.OK);
-    }
-
-    @PutMapping("{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable("id") long id, @RequestBody Student student) {
-        return new ResponseEntity<>(studentService.updateStudent(student, id), HttpStatus.OK);
-    }
-
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable("id") long id) {
-        studentService.deleteStudent(id);
-        return new ResponseEntity<>("Student deleted successfully.", HttpStatus.OK);
+    // Endpoint to delete students by enrollment year
+    @DeleteMapping("/enrollment-year/{year}")
+    public String deleteStudentsByYearOfEnrollment(@PathVariable int year) {
+        studentService.deleteStudentsByYearOfEnrollment(year);
+        return "Deleted students who enrolled in the year " + year;
     }
 }
